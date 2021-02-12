@@ -1,13 +1,14 @@
 {
-    "users": [
-        {
-            "id": 1,
-            "name": "Rob"
-        },
-        {
-            "id": 2, 
-            "name": "Not Rob"
-        }
-    ]
-
+  "users": [
+    {
+      "id": 1,
+      "name": "Rob",
+      "streakInDays": 2
+    },
+    {
+      "name": "Dan",
+      "streakInDays": "23",
+      "id": 2
+    }
+  ]
 }
