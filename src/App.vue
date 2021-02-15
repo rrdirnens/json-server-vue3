@@ -3,20 +3,13 @@
   <h1>Users:</h1>
   <div class="form-wrap">
     <label for="new-user">Enter new user name: </label>
-    <input type="text" name="new-user" required v-model="userName" />
-    <label for="new-user-streak">Enter new user streak: </label>
-    <input
-      type="text"
-      name="new-user-streak"
-      required="true"
-      v-model="userStreak"
-    />
-    <button class="submit" @click="addUser">Add new user</button>
+    <input type="text" name="new-user" v-model="todoName" />
+    <button class="submit" @click="addTodo">Add new user</button>
   </div>
 
   <ul>
-    <li v-for="user of users" :key="user.id">
-      {{ user.name }} has a streak of {{ user.streakInDays }}
+    <li v-for="todo of todos" :key="todo.id">
+      {{ todo.todo }}
     </li>
   </ul>
 </template>
@@ -25,7 +18,8 @@
 import axios from "axios";
 import HelloWorld from "./components/HelloWorld.vue";
 
-const baseURL = "http://localhost:3000/users";
+const baseURL = "http://localhost:3000/todos";
+const loginURL = "http://localhost:3000/auth/login";
 
 export default {
   name: "App",
@@ -34,30 +28,34 @@ export default {
   },
   data() {
     return {
-      users: [],
-      userName: "",
-      userStreak: null,
+      todos: [],
+      todoName: ""
     };
   },
   async created() {
     try {
-      const res = await axios.get(baseURL);
+      const res = await axios({
+        method: 'post',
+        url: loginURL, 
+        data: {
+          "email": "nilson@email.com",
+          "password":"nilson"
+        }
+      })
 
-      this.users = res.data;
+      this.todos = res.data;
     } catch (e) {
       console.error(e);
     }
   },
   methods: {
-    async addUser() {
+    async addTodo() {
       const res = await axios.post(baseURL, {
-        name: this.userName,
-        streakInDays: this.userStreak,
+        todo: this.todoName,
       });
       console.log(res.data);
-      this.users = [...this.users, res.data];
-      this.userName = "";
-      this.userStreak = "";
+      this.todos = [...this.todos, res.data];
+      this.todoName = "";
     },
   },
 };
