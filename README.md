@@ -10,14 +10,19 @@ npm install
 npm run serve
 ```
 
-### Compiles and minifies for production
+### [NOTE: do this on a separate terminal] Starts server without auth
 ```
-npm run build
+npm run server-noauth
 ```
 
-### Lints and fixes files
+### Starts server with auth
 ```
-npm run lint
+npm run server-auth
+```
+
+### Compiles and minifies for production (NOT TESTED YET)
+```
+npm run build
 ```
 
 ### Customize configuration
