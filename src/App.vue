@@ -1,10 +1,10 @@
 <template>
   <HelloWorld msg="JSON server + Vue 3" />
-  <h1>Users:</h1>
+  <h1>Todos:</h1>
   <div class="form-wrap">
-    <label for="new-user">Enter new user name: </label>
+    <label for="new-user">Enter new todo: </label>
     <input type="text" name="new-user" v-model="todoName" />
-    <button class="submit" @click="addTodo">Add new user</button>
+    <button class="submit" @click="addTodo">Submit</button>
   </div>
 
   <ul>
@@ -29,7 +29,8 @@ export default {
   data() {
     return {
       todos: [],
-      todoName: ""
+      todoName: "",
+      accessToken: ''
     };
   },
   async created() {
@@ -43,7 +44,10 @@ export default {
         }
       })
 
-      this.todos = res.data;
+      this.accessToken = res.data;
+      console.log(JSON.stringify(this.accessToken))
+      console.log("Login successful")
+      this.getTodos()
     } catch (e) {
       console.error(e);
     }
@@ -57,6 +61,21 @@ export default {
       this.todos = [...this.todos, res.data];
       this.todoName = "";
     },
+
+    async getTodos() {
+      await axios.get(baseURL, {
+        headers: {
+          'Authorization': `Bearer ${this.accessToken}`
+        }
+      })
+      .then((res) => {
+        console.log(res.data)
+        this.todos = res.data
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+    }
   },
 };
 </script>
