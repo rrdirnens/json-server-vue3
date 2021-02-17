@@ -1,5 +1,6 @@
 <template>
   <HelloWorld msg="JSON server + Vue 3" />
+  <div class="create-new-user" @click="addUser">REGISTER</div>
   <h1>Todos:</h1>
   <div class="form-wrap">
     <label for="new-user">Enter new todo: </label>
@@ -20,6 +21,7 @@ import HelloWorld from "./components/HelloWorld.vue";
 
 const baseURL = "http://localhost:3000/todos";
 const loginURL = "http://localhost:3000/auth/login";
+const registerURL = "http://localhost:3000/auth/register";
 
 export default {
   name: "App",
@@ -30,7 +32,7 @@ export default {
     return {
       todos: [],
       todoName: "",
-      accessToken: ''
+      accessToken: ""
     };
   },
   async created() {
@@ -44,7 +46,7 @@ export default {
         }
       })
 
-      this.accessToken = res.data;
+      this.accessToken = res.data
       console.log(JSON.stringify(this.accessToken))
       console.log("Login successful")
       this.getTodos()
@@ -60,6 +62,25 @@ export default {
       console.log(res.data);
       this.todos = [...this.todos, res.data];
       this.todoName = "";
+    },
+
+    async addUser() {
+      try {
+        const res = await axios({
+          method: 'post', 
+          url: registerURL, 
+          data: {
+            "email": "rob@email.com", 
+            "password": "1234"
+          }
+        })
+  
+        this.accessToken = res.data
+        console.log(JSON.stringify(this.accessToken))
+        console.log("Registration successful")
+      } catch(e) {
+        console.error(e)
+      }
     },
 
     async getTodos() {
