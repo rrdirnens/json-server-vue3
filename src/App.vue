@@ -1,14 +1,34 @@
 <template>
   <HelloWorld msg="JSON server + Vue 3" />
-  <div class="create-new-user" @click="addUser">REGISTER</div>
-  <h1>Todos:</h1>
-  <div class="form-wrap">
-    <label for="new-user">Enter new todo: </label>
-    <input type="text" name="new-user" v-model="todoName" />
-    <button class="submit" @click="addTodo">Submit</button>
+  <div style="display: none;" class="create-new-user" @click="addUser">
+    REGISTER
+  </div>
+  <div class="register-user">
+    <div class="title">Register please:</div>
+    <input
+      type="text"
+      class="user-name"
+      v-model="registration.regUsername"
+      placeholder="Username"
+    />
+    <input
+      type="password"
+      class="user-password"
+      v-model="registration.regPassword"
+      placeholder="Password"
+    />
+    <button class="reg-submit" @click="registerUser">Register</button>
+  </div>
+  <div style="display: none">
+    <h1>Todos:</h1>
+    <div class="form-wrap">
+      <label for="new-user">Enter new todo: </label>
+      <input type="text" name="new-user" v-model="todoName" />
+      <button class="submit" @click="addTodo">Submit</button>
+    </div>
   </div>
 
-  <ul>
+  <ul style="display: none">
     <li v-for="todo of todos" :key="todo.id">
       {{ todo.todo }}
     </li>
@@ -32,27 +52,31 @@ export default {
     return {
       todos: [],
       todoName: "",
-      accessToken: ""
+      accessToken: "",
+      registration: {
+        regUsername: "",
+        regPassword: "",
+      },
     };
   },
   async created() {
-    try {
-      const res = await axios({
-        method: 'post',
-        url: loginURL, 
-        data: {
-          "email": "nilson@email.com",
-          "password":"nilson"
-        }
-      })
+    // try {
+    //   const res = await axios({
+    //     method: "post",
+    //     url: loginURL,
+    //     data: {
+    //       email: "nilson@email.com",
+    //       password: "nilson",
+    //     },
+    //   });
 
-      this.accessToken = res.data
-      console.log(JSON.stringify(this.accessToken))
-      console.log("Login successful")
-      this.getTodos()
-    } catch (e) {
-      console.error(e);
-    }
+    //   this.accessToken = res.data;
+    //   console.log(JSON.stringify(this.accessToken));
+    //   console.log("Login successful");
+    //   this.getTodos();
+    // } catch (e) {
+    //   console.error(e);
+    // }
   },
   methods: {
     async addTodo() {
@@ -64,39 +88,59 @@ export default {
       this.todoName = "";
     },
 
-    async addUser() {
+    async registerUser() {
       try {
         const res = await axios({
-          method: 'post', 
-          url: registerURL, 
+          method: "post",
+          url: registerURL,
           data: {
-            "email": "rob@email.com", 
-            "password": "1234"
-          }
-        })
-  
-        this.accessToken = res.data
-        console.log(JSON.stringify(this.accessToken))
-        console.log("Registration successful")
-      } catch(e) {
-        console.error(e)
+            email: this.registration.regUsername,
+            password: this.registration.regPassword,
+          },
+        });
+
+        this.accessToken = res.data;
+        console.log(JSON.stringify(this.accessToken));
+        console.log("Registration successful");
+      } catch (e) {
+        console.error(e);
       }
     },
 
+    // async addUser() {
+    //   try {
+    //     const res = await axios({
+    //       method: "post",
+    //       url: registerURL,
+    //       data: {
+    //         email: "rob",
+    //         password: "1234",
+    //       },
+    //     });
+
+    //     this.accessToken = res.data;
+    //     console.log(JSON.stringify(this.accessToken));
+    //     console.log("Registration successful");
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+    // },
+
     async getTodos() {
-      await axios.get(baseURL, {
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`
-        }
-      })
-      .then((res) => {
-        console.log(res.data)
-        this.todos = res.data
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-    }
+      await axios
+        .get(baseURL, {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          this.todos = res.data;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
   },
 };
 </script>
@@ -120,6 +164,11 @@ export default {
   justify-content: space-around;
   height: 200px;
   width: 100px;
+}
+
+.register-user {
+  display: flex;
+  flex-direction: column;
 }
 
 ul {
