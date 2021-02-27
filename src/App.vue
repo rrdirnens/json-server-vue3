@@ -1,25 +1,53 @@
 <template>
-  <HelloWorld msg="JSON server + Vue 3" />
-  <div style="display: none;" class="create-new-user" @click="addUser">
+  <HelloWorld msg="Private tracking" />
+  <div style="display: none" class="create-new-user" @click="addUser">
     REGISTER
   </div>
+
+
+
+
+
   <div class="register-user">
-    <div class="title">Register please:</div>
+    <div class="title">Register, please:</div>
     <input
       type="text"
       class="user-name"
-      v-model="registration.regUsername"
+      v-model="registration.user"
       placeholder="Username"
     />
     <input
       type="password"
       class="user-password"
-      v-model="registration.regPassword"
+      v-model="registration.pw"
       placeholder="Password"
     />
     <button class="reg-submit" @click="registerUser">Register</button>
   </div>
-  <div style="display: none">
+
+
+  <div class="login-user" style="margin-top: 20px;">
+    <div class="title">Log in, please:</div>
+    <input
+      type="text"
+      class="user-name"
+      v-model="login.user"
+      placeholder="Username"
+    />
+    <input
+      type="password"
+      class="user-password"
+      v-model="login.pw"
+      placeholder="Password"
+    />
+    <button class="reg-submit" @click="loginUser">Login</button>
+  </div>
+
+
+
+
+
+  <div style="">
     <h1>Todos:</h1>
     <div class="form-wrap">
       <label for="new-user">Enter new todo: </label>
@@ -28,11 +56,14 @@
     </div>
   </div>
 
-  <ul style="display: none">
+  <ul style="">
     <li v-for="todo of todos" :key="todo.id">
       {{ todo.todo }}
     </li>
   </ul>
+
+
+
 </template>
 
 <script>
@@ -51,33 +82,19 @@ export default {
   data() {
     return {
       todos: [],
-      todoName: "",
-      accessToken: "",
+      todoName: '',
+      accessToken: '',
       registration: {
-        regUsername: "",
-        regPassword: "",
+        user: '',
+        pw: '',
       },
+      login: {
+        user: '',
+        pw: ''
+      }
     };
   },
-  async created() {
-    // try {
-    //   const res = await axios({
-    //     method: "post",
-    //     url: loginURL,
-    //     data: {
-    //       email: "nilson@email.com",
-    //       password: "nilson",
-    //     },
-    //   });
-
-    //   this.accessToken = res.data;
-    //   console.log(JSON.stringify(this.accessToken));
-    //   console.log("Login successful");
-    //   this.getTodos();
-    // } catch (e) {
-    //   console.error(e);
-    // }
-  },
+  async created() {},
   methods: {
     async addTodo() {
       const res = await axios.post(baseURL, {
@@ -94,38 +111,39 @@ export default {
           method: "post",
           url: registerURL,
           data: {
-            email: this.registration.regUsername,
-            password: this.registration.regPassword,
+            email: this.registration.user,
+            password: this.registration.pw,
           },
         });
-
         this.accessToken = res.data;
         console.log(JSON.stringify(this.accessToken));
         console.log("Registration successful");
+        this.registration.user = ''
+        this.registration.pw = ''
       } catch (e) {
         console.error(e);
       }
     },
 
-    // async addUser() {
-    //   try {
-    //     const res = await axios({
-    //       method: "post",
-    //       url: registerURL,
-    //       data: {
-    //         email: "rob",
-    //         password: "1234",
-    //       },
-    //     });
+    async loginUser() {
+      try {
+        const res = await axios({
+          method: "post",
+          url: loginURL,
+          data: {
+            email: this.login.user,
+            password: this.login.pw,
+          },
+        });
 
-    //     this.accessToken = res.data;
-    //     console.log(JSON.stringify(this.accessToken));
-    //     console.log("Registration successful");
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // },
-
+        this.accessToken = res.data;
+        console.log(JSON.stringify(this.accessToken));
+        console.log("Login successful");
+        this.getTodos();
+      } catch (e) {
+        console.error(e);
+      }
+    },
     async getTodos() {
       await axios
         .get(baseURL, {
@@ -166,7 +184,7 @@ export default {
   width: 100px;
 }
 
-.register-user {
+.register-user, .login-user {
   display: flex;
   flex-direction: column;
 }
